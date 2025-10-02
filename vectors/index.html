@@ -10,6 +10,16 @@
     <script>
         /*
         MathJax --> Biblioteca de Javascript, serveix per escriure fórmules matemàtiques visualment renderitzades a una web.
+                    Fa servir dos llenguatges: TeX [LaTeX] i MathML.
+                    window.MathJax és la configuració de MathJax a la web.
+                    inlineMath --> Comprova si és territori de MathJax.
+                    svg --> Vector gràfic escalable, les fórmules es renderitzen per formes geomètriques en comptes de píxels, svg fa que escalin aquestes formes.
+        LaTeX -->   S'utilitza LaTeX per escriure fórmules ràpidament i amb qualitat. Fa servir símbols com $ o \\( per indicar el seu ús.
+                        Ex: <p>
+                             When \(a \ne 0\), there are two solutions to \(ax^2 + bx + c = 0\) and they are
+                             \[x = {-b \pm \sqrt{b^2-4ac} \over 2a}.\]
+                            </p> <-- Equació de segon grau {ne --> non equal; ^ --> elevat; \pm --> plus/minus; sqrt --> arrel quadrada; \over --> partit}
+        MathML -->  Significa Markup Language. Més modern que LaTeX, però més complex d'escriure. És un derivat de HTML.     
         */
         window.MathJax = {
             tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
