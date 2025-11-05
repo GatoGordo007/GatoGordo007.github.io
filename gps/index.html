@@ -7,6 +7,7 @@
 <style>
   body { font-family: Arial, sans-serif; margin: 20px; }
   table { border-collapse: collapse; margin-top: 10px; width: 100%; }
+  /* Collapse converteix la taula en una línea, per defecte són dues. */
   th, td { border: 1px solid #ccc; padding: 5px 10px; text-align: center; }
   input, button { padding: 6px; font-size: 14px; margin: 2px; }
   #estat { margin-top: 10px; font-style: italic; color: #555; }
@@ -18,10 +19,24 @@
 <h2>Mesurador de Latitud i Longitud Avançat</h2>
 
 <label><b>Indica el lloc:</b></label>
+  /* label = etiqueta per escriure */
 <input id="ubicacioInput" type="text" placeholder="Ex: Punt A">
 <button onclick="mesura()">Mesura</button>
 <button onclick="exportCSV()">Exporta CSV</button>
+  /* CSV = Comma Separated Values, emmagatzament més eficient. */
 <button onclick="exportGPX()">Exporta GPX</button>
+  /* GPX = GP eXchange, emmagatzament de dades GPS en format XML.
+     trk = tracks, registre de ruta.
+     GIS = Sistema d'Informació Geogràfica (Geographic Information System).
+     Leaflet = mapes interactius compatibles amb mòbils.
+     setView = vista inicial del mapa (coordenades 0, 0 Golf de Guinea)
+     tileLayer = capa de mosaic situada a sobre del mapa, responsable d'afegir el nombre del carrer per exemple.
+     addTo(map) = afegir al mapa les capes creades.
+     PolyLine = dibuix de diverses línees rectes per determinar una trajectòria.
+     estat = variable amb pocs valors constants, per tant definida com a const.
+     ! = negació.
+     API = Application Programing Interface
+     x, y, z = variables de coordenades i zoom.*/
 <div id="estat"></div>
 
 <table id="mesuresTable">
