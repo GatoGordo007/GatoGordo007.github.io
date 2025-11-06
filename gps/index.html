@@ -34,7 +34,9 @@
      addTo(map) = afegir al mapa les capes creades.
      PolyLine = dibuix de diverses línees rectes per determinar una trajectòria.
      estat = variable amb pocs valors constants, per tant definida com a const.
-     ! = negació.
+     ! = Porta lògica negació.
+    || = Porta lògica "o" [Una condició o una altra = true].
+    && = Porta lògica "i" [Ambdues condicions = true].
      API = Application Programing Interface
      x, y, z = variables de coordenades i zoom.*/
 <div id="estat"></div>
@@ -61,7 +63,11 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 let polyline = L.polyline([], {color:'red'}).addTo(map);
-
+  /*
+  A la línia 42 tenim un divisor buit que reserva un espai que representa el valor de "estat", que posteriorment canviarà a
+  "🔍 Obtenint GPS amb precisió alta..." i més endavant encara a "✅ Mesura registrada!" o a "⚠️ Error GPS: " en conjunt a
+  un missatge d'error. 
+  */
 function mesura() {
   const estat = document.getElementById("estat");
   estat.textContent = "🔍 Obtenint GPS amb precisió alta...";
@@ -70,7 +76,29 @@ function mesura() {
     alert("La geolocalització no és compatible amb aquest navegador.");
     return;
   }
+/*
+   getCurrentPosition = part de l'API de Geolocation, pot funcionar amb un únic argument (posició) però pot contenir fins a 3.
+   Primer argument [(pos)] = CallBack d'èxit, funció anònima executada quan el navegador obté la posició. Només rep un objecte anomenat "pos".
+   Segon argument [(err)] = CallBack d'error, funció anònima executada quan el navegador no obté la posició.
+   Tercer argument = Objecte d'opcions, permet regular com funciona el gps.
+   La funció "=>" situada darrere de "(pos)" és la funció anònima perquè no s'escriu la paraula "function".
+   "(pos)" té uns arguments que són "coords.latitude" i "coords.longitude", emmagatzemats a les constants "lat" i "lon" respectivament.
+   41,38 per latitud i 2,18 per longitud. Són variables numèriques (floating point numbers).
+   La constant "ubicacio" agafa amb la funció "getElementById" el valor de la línia 23, introduit per l'usuari. És un string, cadena de caràcters.
+   mesures.push envia mesures dintre de l'array (conjunt de dades) que està composat per diversos objectes i cada objecte està format per latitud, longitud i ubicació.
+   Aquests 3 arguments són els arguments utilitzats per .push, un mètode (aplicat sintàxicament amb un punt endavant) que apliquem cap a un array.
 
+   Funció anònima: sense nom, executable, amb la intenció d'estalviar codi.
+   Funció predefinida: amb nom, sense definir el nom dins del codi.
+
+   const ubicacio = document.getElementById("ubicacioInput").value || `Punt ${mesures.length+1}`;
+   La anterior línia indica que si el usuari no introdueix un nombre a la posició, que el codi afegeixi un per defecte, que és "Punt" més el nombre del punt més 1.
+   document.getElementById("ubicacioInput").value = "";
+   La anterior línia esborra el text introduit a on es defineix el nom del punt.
+   .textContent és una funció que altera el valor d'un string, substituint-lo amb un de nou.
+   err.message és una funció que demana un missatge d'error predefinit.
+   .message de 100 a 199 són informatius, de 200 a 299 són d'èxit, de 300 a 399 de redirecció, de 400 a 499 a d'error de client i de 500 a 599 d'error de servidor.
+*/
   navigator.geolocation.getCurrentPosition(
     (pos) => {
       const lat = pos.coords.latitude;
