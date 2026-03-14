@@ -1,1 +1,23 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="pearto.ico" rel="icon">
+  <title>Barcelona Pollution-ARI</title>
+</head>
+<body data-bs-theme="dark">
+<h1>Explanation</h1>
+<h2>Introduction</h2>
+<p>To understand the graphs, we must first know what we're trying to figure out. We're analyzing Barcelona's meteorological pollution data and searching for time correlations with acute respiratory infections in the area to know whether or not are they correlated.</p>
+<p>For this, we use a mixture of libraries and R Studio.</p>
+<h3>Step-by-step process</h3>
+<p>First thing we do is download our data from official sources. For our meteorological data, we visited&nbsp;<em>meteocat</em>'s page, which was easy to access. For our ARI data, since the official database is trickier to enter to, we used help from a code designed by the director of the study.</p>
+<p>When we first downloaded the data, there was a noticeable issue with it: it's presentation. They were in different formats, different file types, organized by different columns and rows, etc. This made them completely incompatible with graphic rendering and comparison, thus we opened R Studio for the first time in order to fix this.</p>
+<p>We installed the library&nbsp;<em>tidyverse</em>&nbsp;(library specifically designed for reestructuring of large chunks of data) to make things easier and after running a few prompts, such as <strong>city &lt;- read.csv("...") {for setting the variable}&nbsp;</strong>and&nbsp;<strong>city2 &lt;- city1[-c(...)] </strong><strong>{for removing unnecessary data columns}</strong>, we had changed our formats to long format and file type all to .csv and had a consistent column distribution in which time and date numbers were now coherent and legible for any program.</p>
+<p>Finally, in order to render our pollution graph, we installed the library&nbsp;<em>openair</em>&nbsp;(library specifically designed for air quality and wind data analysis) and by the usage of&nbsp;<strong>timeVariation</strong><strong>(city2)</strong>, we managed for R Studio to show us a pollution graph of our desired contaminats during different hours of the day, days of the week and months of the year.</p>
+<p>In order to render our ARI graph, we also used a page designed by the director of the analysis research.</p>
+<h3>Results</h3>
+<p>The resulting graphs and their interpretations can be found in this <a href="https://gatogordo007.github.io/barcelona/graph/">page</a>.</p>
+</body>
+</html>
