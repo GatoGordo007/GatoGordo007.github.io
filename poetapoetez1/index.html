@@ -1,0 +1,183 @@
+
+<!DOCTYPE html> 
+<html lang="ca">
+    <!-- Lang significa language, la llengua que utilitza el document -->
+<head>
+    <meta charset="UTF-0">
+    <!-- Meta, és metainformació, que es informació sobre la pàgina web. Charset, conjunt de caracters que utilitzem
+    i UTF-8, si es unicode transformation format de 8 bits que permet accents, dieresi, ñ, ç, i també caracters àrabs, xinesos-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reconeixement de Veu amb Anàlisi de Sentiments</title> 
+    <!-- Title aquest no es el títol del contingut sino el títol de pestanya-->
+    <style>
+        /* En el llenguatge CSS (Cascading Style Sheets, u hojas de estilo en cascada) que vindria a ser com el look de la pàgina web
+        Com es sempre el CSS ? Si, és sempre etiquetahtml{propietat1:valor1;propietat2:valor2;}
+         El body bes tot el contingut de la pàgina. Font-family és el tipus de lletra i buscarà arial i si
+        no la troba buscarà qualsevol sans-serif (sense floritudes a les lletres). hi ha 3 grans grups de lletres que són 
+        serif, sans-serif i monocode.
+        Serif:amb floritudes. Monocode: amplada de cada lletra sempre la mateixa i això fa per codi. El tipus de lletra més comú com linies
+        Sans-serif: arial és la lletra més comuna
+        Monocode/Monospace: El més comú és Courier New.*/
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            /*Amplada màxima */
+            margin: 0 auto;
+            /*Margin es el marge exterior*/
+            padding: 20px;
+            /*Padding és el marge interior*/
+            /*Tan margin com padding poden tenir 1,2,3 o 4 propietats de pixels 
+            si té un número de pixels afectara  a totes direccions, si te dos números, és adalt i abaix, per exemple 0 auto a dalt
+            i abaix  i auto dreta i esquerra. Si tenim 3 numeros, la primera adalt, la segona es abaix, i la ultima es dreta i esquerra*/
+        }
+        
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        
+        .sentiment-box {
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .positiu {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .negatiu {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .neutral {
+            background-color: #e2e3e5;
+            color: #383d41;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Prova de reconeixement de veu</h2>
+<button onclick="start()">Parla</button>
+
+<div class="status" id="estat">Esperant...</div>
+
+<p><strong>Text reconegut:</strong></p>
+<div id="resultat"></div>
+
+<p><strong>Anàlisi de sentiments:</strong></p>
+<div class="sentiment-box neutral" id="sentiment">
+    Esperant text per analitzar...
+</div>
+
+<script>
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const recognition = new SpeechRecognition();
+recognition.lang = "ca-ES";
+
+// DICCIONARI SIMPLIFICAT (només 10 paraules)
+const diccionariSentiments = {
+    // Paraules positives (5 paraules)
+    "bo": 2,
+    "bé": 2,
+    "content": 2,
+    "feliç": 2,
+    "fantàstic": 3,
+    
+    // Paraules negatives (5 paraules)
+    "dolent": -2,
+    "malament": -2,
+    "trist": -2,
+    "horrible": -3,
+    "problema": -1
+};
+
+function analitzarSentiment(text) {
+    const paraules = text.toLowerCase().split(/\s+/);
+    let puntuacio = 0;
+    let paraulesTrobades = [];
+    
+    for (const paraula of paraules) {
+        if (diccionariSentiments.hasOwnProperty(paraula)) {
+            puntuacio += diccionariSentiments[paraula];
+            paraulesTrobades.push({
+                paraula: paraula,
+                valor: diccionariSentiments[paraula]
+            });
+        }
+    }
+    
+    let sentiment = "neutral";
+    let missatge = "Sentiment neutral";
+    
+    if (puntuacio > 2) {
+        sentiment = "positiu";
+        missatge = "😊 Sentiment molt positiu";
+    } else if (puntuacio > 0) {
+        sentiment = "positiu";
+        missatge = "🙂 Sentiment positiu";
+    } else if (puntuacio < -2) {
+        sentiment = "negatiu";
+        missatge = "😠 Sentiment molt negatiu";
+    } else if (puntuacio < 0) {
+        sentiment = "negatiu";
+        missatge = "😐 Sentiment negatiu";
+    }
+    
+    return {
+        sentiment: sentiment,
+        missatge: missatge,
+        puntuacio: puntuacio,
+        paraulesTrobades: paraulesTrobades
+    };
+}
+
+function start() {
+    document.getElementById("estat").innerText = "🎧 Escoltant...";
+    document.getElementById("estat").className = "status";
+    recognition.start();
+}
+
+recognition.onresult = e => {
+    const textReconegut = e.results[0][0].transcript;
+    document.getElementById("estat").innerText = "✅ Veu detectada";
+    document.getElementById("resultat").innerText = textReconegut;
+    
+    // Analitzar sentiment
+    const resultatAnalisi = analitzarSentiment(textReconegut);
+    
+    // Actualitzar visualització de sentiment
+    const elementSentiment = document.getElementById("sentiment");
+    elementSentiment.innerText = resultatAnalisi.missatge + " (Puntuació: " + resultatAnalisi.puntuacio + ")";
+    elementSentiment.className = "sentiment-box " + resultatAnalisi.sentiment;
+    
+    // Mostrar paraules detectades
+    if (resultatAnalisi.paraulesTrobades.length > 0) {
+        let detalls = "Paraules detectades: ";
+        resultatAnalisi.paraulesTrobades.forEach(p => {
+            detalls += p.paraula + "(" + p.valor + ") ";
+        });
+        console.log(detalls);
+    }
+};
+
+recognition.onerror = e => {
+    document.getElementById("estat").innerText = "❌ Error: " + e.error;
+    document.getElementById("estat").className = "status";
+};
+</script>
+
+</body>
+</html>
